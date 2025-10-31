@@ -83,6 +83,10 @@ public class CanonRotation : MonoBehaviour, InputSystem_Actions.IPlayerActions
         if (context.canceled)
         {
             var projectile = Instantiate(Bullet, transform.position, Quaternion.identity); //canviar la posició on s'instancia
+            if (ProjectileSpeed > MaxSpeed)
+            {
+                ProjectileSpeed = MaxSpeed;
+            }
             projectile.GetComponent<Rigidbody2D>().linearVelocity = _distanceBetweenMouseAndPlayer * ProjectileSpeed;
             ProjectileSpeed = 0f;
             isRaising = false;

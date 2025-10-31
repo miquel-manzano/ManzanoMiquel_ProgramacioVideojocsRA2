@@ -352,6 +352,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _maxRotation: {x: 0, y: 0, z: 30.7}
   _minRotation: {x: 0, y: 0, z: -72.59}
+  _offset: -51.6
   ShootPoint: {fileID: 813391960732321730}
   Bullet: {fileID: 3310951103841112713, guid: 23530ee81f0a7b748a4ddbd0417f8776, type: 3}
   ProjectileSpeed: 0
