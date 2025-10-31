@@ -1,15 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
-public class CanonRotation : MonoBehaviour
+public class CanonRotation : MonoBehaviour, InputSystem_Actions.IPlayerActions
 {
+    private InputSystem_Actions inputActions;
+
     public Vector3 _maxRotation;
     public Vector3 _minRotation;
     private float _offset = -51.6f;
     public GameObject ShootPoint;
     public GameObject Bullet;
-    public float ProjectileSpeed = 0;
+    public float ProjectileSpeed = 2f;
     public float MaxSpeed;
     public float MinSpeed;
     public GameObject PotencyBar;
@@ -17,16 +20,33 @@ public class CanonRotation : MonoBehaviour
     private Vector2 _distanceBetweenMouseAndPlayer;
     private bool isRaising = false;
     [SerializeField] private float _multiplier = 10f;
+
+
     private void Awake()
     {
+        inputActions = new InputSystem_Actions();
+        inputActions.Player.SetCallbacks(this);
+
         _initialScaleX = PotencyBar.transform.localScale.x;
     }
+
+    public void OnEnable()
+    {
+        inputActions.Enable();
+    }
+
+    public void OnDisable()
+    {
+        inputActions.Disable();
+    }
+
+
     void Update()
     {
-        Vector2 mousePos; //obtenir el valor del click del cursor (Fer amb new input system)
-        _distanceBetweenMouseAndPlayer = Vector2.zero; //obtenir el vector distància entre el canó i el cursor
-        //var ang = (Mathf.Atan2(dist.y, dist.x) * 180f / Mathf.PI + offset);
-        transform.rotation = Quaternion.Euler(0,0,0); //en quin dels tres eixos va l'angle?
+        Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition); //obtenir el valor del click del cursor (Fer amb new input system)
+        _distanceBetweenMouseAndPlayer = mousePos.normalized; //obtenir el vector distància entre el canó i el cursor
+        var ang = (Mathf.Atan2(mousePos.y, mousePos.x) * 180f / Mathf.PI + _offset);
+        transform.rotation = Quaternion.Euler(0,0, ang); //en quin dels tres eixos va l'angle?
 
         if (isRaising)
         {
@@ -43,8 +63,12 @@ public class CanonRotation : MonoBehaviour
             transform.localScale.y,
             transform.localScale.z);
     }
-    /*public void OnLeftClick(InputAction.CallbackContext context)
+
+    public void OnOnLeftClick(InputAction.CallbackContext context)
     {
+        Debug.Log("Shoot");
+        
+        
         if (context.started)
         {
             isRaising = true;
@@ -52,9 +76,9 @@ public class CanonRotation : MonoBehaviour
         if (context.canceled)
         {
             var projectile = Instantiate(Bullet, transform.position, Quaternion.identity); //canviar la posició on s'instancia
-            projectile.GetComponent<Rigidbody2D>().linearVelocity =
+            projectile.GetComponent<Rigidbody2D>().linearVelocity = _distanceBetweenMouseAndPlayer * ProjectileSpeed;
             ProjectileSpeed = 0f;
             isRaising = false;
         }
-    }*/
+    }
 }
