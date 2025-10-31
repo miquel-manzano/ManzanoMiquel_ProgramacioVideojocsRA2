@@ -9,10 +9,10 @@ public class CanonRotation : MonoBehaviour, InputSystem_Actions.IPlayerActions
 
     public Vector3 _maxRotation;
     public Vector3 _minRotation;
-    private float _offset = -51.6f;
+    public float _offset;
     public GameObject ShootPoint;
     public GameObject Bullet;
-    public float ProjectileSpeed = 2f;
+    public float ProjectileSpeed;
     public float MaxSpeed;
     public float MinSpeed;
     public GameObject PotencyBar;
@@ -45,8 +45,15 @@ public class CanonRotation : MonoBehaviour, InputSystem_Actions.IPlayerActions
     {
         Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition); //obtenir el valor del click del cursor (Fer amb new input system)
         _distanceBetweenMouseAndPlayer = mousePos.normalized; //obtenir el vector distància entre el canó i el cursor
-        var ang = (Mathf.Atan2(mousePos.y, mousePos.x) * 180f / Mathf.PI + _offset);
-        transform.rotation = Quaternion.Euler(0,0, ang); //en quin dels tres eixos va l'angle?
+        var ang = (Mathf.Atan2(_distanceBetweenMouseAndPlayer.y, _distanceBetweenMouseAndPlayer.x) * 180f / Mathf.PI + _offset);
+
+
+        if (ang < _maxRotation.z && ang > _minRotation.z)
+        {
+            Debug.Log("Max rotation reached");
+            transform.rotation = Quaternion.Euler(0, 0, ang); //en quin dels tres eixos va l'angle?
+        }
+        
 
         if (isRaising)
         {
